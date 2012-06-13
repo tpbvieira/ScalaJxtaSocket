@@ -1,35 +1,35 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" >
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>jxse-tutorials</artifactId>
-	<groupId>com.kenai.jxse</groupId>
-	<version>2.6</version>
-	<packaging>jar</packaging>
+	<artifactId>ScalaJxtaSocket</artifactId>
+	<groupId>br.ufpe.cin</groupId>
+	<version>0.0.1</version>
+<!-- 	<packaging>jar</packaging> -->
 
-	<name>JXSE Tutorials</name>
+<!-- 	<name>JXSE Tutorials</name>
 	<organization>
 		<name>Project JXSE</name>
 		<url>http://jxse.kenai.com/</url>
-	</organization>
+	</organization> -->
 
-	<description>The JXSE tutorials provide examples explaining how to use JXSE,
+<!-- 	<description>The JXSE tutorials provide examples explaining how to use JXSE,
         the Java implementation of the JXTA protocols.</description>
 
 	<issueManagement>
 		<system>Project Issues</system>
 		<url>http://kenai.com/jira/browse/JXSE</url>
-	</issueManagement>
+	</issueManagement> -->
 
-	<licenses>
+<!-- 	<licenses>
 		<license>
 			<name>Sun Project JXTA(TM) Software License</name>
 			<url>http://jxse.kenai.com/License/License.html</url>
 			<distribution>repo</distribution>
 		</license>
-	</licenses>
+	</licenses> -->
 
-	<mailingLists>
+<!-- 	<mailingLists>
 		<mailingList>
 			<name>cvs</name>
 			<subscribe> cvs@platform.jxta.org </subscribe>
@@ -50,7 +50,7 @@
 		</mailingList>
 	</mailingLists>
 	<developers>
-	</developers>
+	</developers> -->
 	<build>
 		<plugins>
 			<plugin>
@@ -101,10 +101,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<repositories>
+<!-- 	<repositories>
 
 		<repository>
-			<!-- Repository needed to include the jboss netty library -->
+			Repository needed to include the jboss netty library
 			<id>repository.jboss.org</id>
 			<url>http://repository.jboss.org/maven2</url>
 			<snapshots>
@@ -112,11 +112,30 @@
 			</snapshots>
 		</repository>
 
-		<!-- Sonatype repository containing JXSE.jar <repository> <id>repository.oss.sonatype.org</id> 
-			<url>https://oss.sonatype.org/content/repositories/comkenaijxse-057/</url> 
-			<snapshots> <enabled>true</enabled> </snapshots> </repository> -->
+	</repositories> -->
 
-	</repositories>
+   <repositories>
+
+            <!-- Sonatype repository containing JXSE.jar -->
+            <repository>
+                    <id>repository.oss.sonatype.org</id>
+                    <url>https://oss.sonatype.org/content/repositories/comkenaijxse-057/</url>
+                    <snapshots>
+                            <enabled>true</enabled>
+                    </snapshots>
+            </repository>
+
+            <!-- Repository needed to include the jboss netty library -->
+            <repository>
+                    <id>repository.jboss.org</id>
+                    <url>http://repository.jboss.org/maven2</url>
+                    <snapshots>
+                            <enabled>false</enabled>
+                    </snapshots>
+            </repository>
+
+    </repositories>
+
 
 
 	<dependencies>
