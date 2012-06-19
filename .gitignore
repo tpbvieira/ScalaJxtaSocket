@@ -1,4 +1,9 @@
+.cache
+target/*
+bin/*
+.idea*
 .classpath
 .project
-.settings/
-target/
+.settings/*
+project/target/*
+project/project/*

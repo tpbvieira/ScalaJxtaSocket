@@ -109,7 +109,7 @@ public class SimpleSocketClient {
 		}
 
 		netPeerGroup = manager.getNetPeerGroup();
-		pipeAdv = SimpleJxtaSocketServer.createSocketAdvertisement();
+		pipeAdv = JxtaSocketServer.createSocketAdvertisement();
 		
 		if (waitForRendezvous) {
 			manager.waitForRendezvousConnection(0);

@@ -112,21 +112,32 @@
 			</snapshots>
 		</repository>
 
-		<!-- Sonatype repository containing JXSE.jar <repository> <id>repository.oss.sonatype.org</id> 
+		<!-- Sonatype repository containing JXSE.jar 
+		<repository> 
+			<id>repository.oss.sonatype.org</id> 
 			<url>https://oss.sonatype.org/content/repositories/comkenaijxse-057/</url> 
-			<snapshots> <enabled>true</enabled> </snapshots> </repository> -->
-
+			<snapshots> 
+				<enabled>true</enabled> 
+			</snapshots> 
+		</repository> 
+			-->
+		<repository>
+			<id>typesafe</id>
+			<name>Typesafe Repository</name>
+			<url>http://repo.typesafe.com/typesafe/releases/</url>
+		</repository>
 	</repositories>
-
-
 	<dependencies>
-
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-actor</artifactId>
+			<version>2.0.2</version>
+		</dependency>
 		<dependency>
 			<artifactId>jxse</artifactId>
 			<groupId>com.kenai.jxse</groupId>
 			<version>2.6</version>
 		</dependency>
-
 		<dependency>
 			<groupId>bouncycastle</groupId>
 			<artifactId>bcprov-jdk15</artifactId>
@@ -152,14 +163,8 @@
 		<!-- The following dependencies are not always needed in normal JXTA use, 
 			so they are flagged as "optional". Include it manually in your project's 
 			pom.xml if you want to use the parts of JXTA that depend on them. -->
-		<!-- 
-		<dependency>
-			<groupId>jetty</groupId>
-			<artifactId>org.mortbay.jetty</artifactId>
-			<version>4.2.25</version>
-			<optional>true</optional>
-		</dependency>
-		 -->
+		<!-- <dependency> <groupId>jetty</groupId> <artifactId>org.mortbay.jetty</artifactId> 
+			<version>4.2.25</version> <optional>true</optional> </dependency> -->
 		<dependency>
 			<groupId>org.jboss.netty</groupId>
 			<artifactId>netty</artifactId>
