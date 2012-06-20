@@ -67,7 +67,7 @@ public class JavaSocketServer {
 				System.out.println("### Iterations: " + iterations);
 				System.out.println("### Size: " + dataSize);
 				
-				System.out.println(MessageFormat.format("### {0}# Sending/Receiving {1} bytes in {2} times.", 
+				System.out.println(MessageFormat.format("### ThreadId:{0} Sending/Receiving {1} bytes in {2} times.", 
 						Thread.currentThread().getId(), totalSize, iterations));
 
 				for (int i = 0; i < iterations; i++) {
@@ -80,12 +80,12 @@ public class JavaSocketServer {
 				out.close();
 				in.close();
 				socket.close();
-				System.out.println("### " + Thread.currentThread().getId() + "# Socket closed");
+				System.out.println("### ThreadId:" + Thread.currentThread().getId() + " Socket closed");
 				
 				long finish = System.currentTimeMillis();
 				long elapsed = finish - start;
 
-				System.out.println(MessageFormat.format("### {3}# Received {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
+				System.out.println(MessageFormat.format("### ThreadId:{3} Received {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
 						totalSize, elapsed,	(totalSize / elapsed) * 1000 / 1024, Thread.currentThread().getId()));
 			} catch (Exception ie) {
 				ie.printStackTrace();

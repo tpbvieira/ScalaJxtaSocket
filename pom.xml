@@ -1,58 +1,55 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 	<modelVersion>4.0.0</modelVersion>
-
-	<artifactId>jxse-tutorials</artifactId>
-	<groupId>com.kenai.jxse</groupId>
-	<version>2.6</version>
+	<groupId>cin.ufpe</groupId>
+	<artifactId>scalajxtasocket_2.9.1</artifactId>
 	<packaging>jar</packaging>
-
-	<name>JXSE Tutorials</name>
+	<description>ScalaJxtaSocket</description>
+	<version>1.0</version>
+	<name>ScalaJxtaSocket</name>
 	<organization>
-		<name>Project JXSE</name>
-		<url>http://jxse.kenai.com/</url>
+		<name>cin.ufpe</name>
 	</organization>
-
-	<description>The JXSE tutorials provide examples explaining how to use JXSE,
-        the Java implementation of the JXTA protocols.</description>
-
-	<issueManagement>
-		<system>Project Issues</system>
-		<url>http://kenai.com/jira/browse/JXSE</url>
-	</issueManagement>
-
-	<licenses>
-		<license>
-			<name>Sun Project JXTA(TM) Software License</name>
-			<url>http://jxse.kenai.com/License/License.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<mailingLists>
-		<mailingList>
-			<name>cvs</name>
-			<subscribe> cvs@platform.jxta.org </subscribe>
-			<unsubscribe> cvs-unsubscribe@platform.jxta.org </unsubscribe>
-			<archive> http://platform.jxta.org/servlets/SummarizeList?listName=cvs </archive>
-		</mailingList>
-		<mailingList>
-			<name>dev</name>
-			<subscribe> dev@platform.jxta.org </subscribe>
-			<unsubscribe> dev-unsubscribe@platform.jxta.org </unsubscribe>
-			<archive> http://platform.jxta.org/servlets/SummarizeList?listName=dev </archive>
-		</mailingList>
-		<mailingList>
-			<name>issues</name>
-			<subscribe> issues@platform.jxta.org </subscribe>
-			<unsubscribe> issues-unsubscribe@platform.jxta.org </unsubscribe>
-			<archive> http://platform.jxta.org/servlets/SummarizeList?listName=issues </archive>
-		</mailingList>
-	</mailingLists>
-	<developers>
-	</developers>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<phase>compile</phase>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<phase>test-compile</phase>
+					</execution>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<scalaVersion>${scala.version}</scalaVersion>
+					<args>
+						<arg>-target:jvm-1.5</arg>
+						<!-- to support mix java/scala only -->
+						<arg>-make:transitivenocp</arg>
+						<arg>-dependencyfile</arg>
+						<arg>${project.build.directory}/.scala_dependencies</arg>
+					</args>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -61,11 +58,9 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-
 			<!-- We use assembly to package the source code as a project ready for 
 				Maven. -->
 			<plugin>
-
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2-beta-5</version>
 				<configuration>
@@ -81,7 +76,6 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
-
 				<executions>
 					<execution>
 						<id>make-assembly</id>
@@ -91,99 +85,104 @@
 						</goals>
 					</execution>
 				</executions>
-
 			</plugin>
-
 		</plugins>
-
 	</build>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<repositories>
-
-		<repository>
-			<!-- Repository needed to include the jboss netty library -->
-			<id>repository.jboss.org</id>
-			<url>http://repository.jboss.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-		<!-- Sonatype repository containing JXSE.jar 
-		<repository> 
-			<id>repository.oss.sonatype.org</id> 
-			<url>https://oss.sonatype.org/content/repositories/comkenaijxse-057/</url> 
-			<snapshots> 
-				<enabled>true</enabled> 
-			</snapshots> 
-		</repository> 
-			-->
-		<repository>
-			<id>typesafe</id>
-			<name>Typesafe Repository</name>
-			<url>http://repo.typesafe.com/typesafe/releases/</url>
-		</repository>
-	</repositories>
 	<dependencies>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.9.1</version>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.typesafe.akka</groupId>
 			<artifactId>akka-actor</artifactId>
 			<version>2.0.2</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<artifactId>jxse</artifactId>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-testkit</artifactId>
+			<version>2.0.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.typesafe.akka</groupId>
+			<artifactId>akka-remote</artifactId>
+			<version>2.0.2</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.kenai.jxse</groupId>
+			<artifactId>jxse</artifactId>
 			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>bouncycastle</groupId>
-			<artifactId>bcprov-jdk15</artifactId>
-			<version>140</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.3</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.13</version>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.main</artifactId>
 			<version>2.0.1</version>
+			<scope>compile</scope>
 		</dependency>
-
-		<!-- The following dependencies are not always needed in normal JXTA use, 
-			so they are flagged as "optional". Include it manually in your project's 
-			pom.xml if you want to use the parts of JXTA that depend on them. -->
-		<!-- <dependency> <groupId>jetty</groupId> <artifactId>org.mortbay.jetty</artifactId> 
-			<version>4.2.25</version> <optional>true</optional> </dependency> -->
 		<dependency>
 			<groupId>org.jboss.netty</groupId>
 			<artifactId>netty</artifactId>
 			<version>3.1.5.GA</version>
-			<optional>true</optional>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>10.5.3.0_1</version>
-			<optional>true</optional>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.1.118</version>
-			<optional>true</optional>
+			<scope>compile</scope>
 		</dependency>
-		<!-- Test dependencies -->
 	</dependencies>
-
+	<repositories>
+		<repository>
+			<id>scala-tools.org</id>
+			<name>Scala-tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</repository>
+		<repository>
+			<id>TypesafeRepository</id>
+			<name>Typesafe Repository</name>
+			<url>http://repo.typesafe.com/typesafe/releases/</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>repositoryjbossorg</id>
+			<name>repository.jboss.org</name>
+			<url>http://repository.jboss.org/maven2/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>scala-tools.org</id>
+			<name>Scala-tools Maven2 Repository</name>
+			<url>http://scala-tools.org/repo-releases</url>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

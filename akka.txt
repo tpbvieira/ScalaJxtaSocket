@@ -1,0 +1,62 @@
+### Connections Expected: 10
+
+### Socket connection #1
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,521 ms. Throughput = 10,154 KB/sec.
+
+### Socket connection #2
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,267 ms. Throughput = 11,291 KB/sec.
+
+### Socket connection #3
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 1,995 ms. Throughput = 12,832 KB/sec.
+
+### Socket connection #4
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,019 ms. Throughput = 12,678 KB/sec.
+
+### Socket connection #5
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,067 ms. Throughput = 12,384 KB/sec.
+
+### Socket connection #6
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 1,995 ms. Throughput = 12,832 KB/sec.
+
+### Socket connection #7
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,147 ms. Throughput = 11,922 KB/sec.
+
+### Socket connection #8
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,243 ms. Throughput = 11,413 KB/sec.
+
+### Socket connection #9
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 2,155 ms. Throughput = 11,878 KB/sec.
+
+### Socket connection #10
+### Connecting to the server
+### Client Sending/Receiving 26214400 bytes in 50 iterations.
+### Socket connection closed
+### Processed 26,214,400 bytes in 1,951 ms. Throughput = 13,121 KB/sec.
+### Test Finished

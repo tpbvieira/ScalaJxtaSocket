@@ -14,8 +14,9 @@ class AkkaEchoServer(port: Int) extends Actor {
     IOManager(context.system) listen new InetSocketAddress(port)
   }
 
-  def receive = {
-    
+  override def postStop() {}
+  
+  def receive = {    
   	case IO.NewClient(server) =>
   	  println("### NewClient")
       val socket = server.accept()      
@@ -42,8 +43,8 @@ object AkkaEchoServer extends App{
         println("Size: " + bs.size)
         println("I'll get here")
         socket.asSocket write bs        
-        println("But not here ... as expected")        
-      }    
+        println("But not here ... as expected")
+      }
   }
 
   ActorSystem().actorOf(Props(new AkkaEchoServer(7400)))

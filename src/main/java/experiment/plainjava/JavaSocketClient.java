@@ -12,9 +12,11 @@ import java.util.Arrays;
 
 public class JavaSocketClient {
 
-	private final static long RUNS = 10;
-	private final static long ITERATIONS = 10;
-	private final static int PAYLOADSIZE = 64 * 1024;//1kb
+	private static long RUNS = 10;
+	private static long ITERATIONS = 50;
+	private static int PAYLOADSIZE = 512 * 1024;//1kb
+	private static String HOST = "localhost";
+	private static boolean isAkka = false;
 
 	public JavaSocketClient() {
 	}
@@ -22,11 +24,11 @@ public class JavaSocketClient {
 	public void run() {
 		try {
 			long start = System.currentTimeMillis();
-			System.out.println("### Connecting to the server");
-	
-			Socket socket = new Socket("localhost",JavaSocketServer.serverPort);
+			System.out.println("### JavaSocketClient connecting to the server");
+
+			Socket socket = new Socket(HOST,JavaSocketServer.serverPort);
 			socket.setSoTimeout(0);
-			
+
 			// get the socket output stream
 			OutputStream out = socket.getOutputStream();
 			DataOutput dos = new DataOutputStream(out);
@@ -34,10 +36,12 @@ public class JavaSocketClient {
 			// get the socket input stream
 			InputStream in = socket.getInputStream();
 			DataInput dis = new DataInputStream(in);
-			
+
 			long totalSize = ITERATIONS * (long) PAYLOADSIZE;
-//			dos.writeLong(ITERATIONS);
-//			dos.writeInt(PAYLOADSIZE);
+			if(!isAkka){
+				dos.writeLong(ITERATIONS);
+				dos.writeInt(PAYLOADSIZE);
+			}
 			System.out.println("### Client Sending/Receiving " + totalSize + " bytes in " + ITERATIONS + " iterations.");
 
 			for (int i = 0; i < ITERATIONS; i++) {
@@ -67,6 +71,15 @@ public class JavaSocketClient {
 	}
 
 	public static void main(String args[]) {
+
+		if(args.length >= 4){
+			HOST = args[0];
+			RUNS = Integer.valueOf(args[1]).intValue();
+			ITERATIONS = Integer.valueOf(args[2]).intValue();			
+			PAYLOADSIZE = Integer.valueOf(args[3]).intValue() * 1024;
+			if(args.length > 4)
+				isAkka = true;
+		}
 
 		try {
 			Thread.currentThread().setName(JavaSocketClient.class.getName() + ".main()");			

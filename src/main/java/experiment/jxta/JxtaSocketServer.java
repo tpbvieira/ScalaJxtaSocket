@@ -48,6 +48,8 @@ public class JxtaSocketServer {
 
 		try {
 			serverSocket = new JxtaServerSocket(netPeerGroup, createSocketAdvertisement(), 10);
+			serverSocket.setSoTimeout(0);
+			System.out.println("### Server: " + serverSocket.getLocalSocketAddress());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -55,10 +57,11 @@ public class JxtaSocketServer {
 		int i = 1;
 		while (true) {
 			try {
-				System.out.println("### Waiting for connections");
-				serverSocket.setSoTimeout(0);
-				Socket socket = serverSocket.accept();
+				System.out.println("### Waiting for connections");				
+				Socket socket = serverSocket.accept();				
 				if (socket != null) {
+					System.out.println("### InetAddress: " + socket.getInetAddress());
+					System.out.println("### Port: " + socket.getLocalPort());
 					System.out.println("\n### Receiving #" + i++);
 					Thread thread = new Thread(new ConnectionHandler(socket), "ConnectionHandlerThread");
 					thread.start();

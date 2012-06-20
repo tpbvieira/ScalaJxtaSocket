@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -21,9 +23,9 @@ import net.jxta.socket.JxtaSocket;
 
 public class JxtaSocketClient {
 
-	private final static long RUNS = 10;
-	private final static long ITERATIONS = 50;
-	private final static int PAYLOADSIZE = 512 * 1024;//64kb
+	private final static long RUNS = 1;
+	private final static long ITERATIONS = 100;
+	private final static int PAYLOADSIZE = 1024;//64kb
 	private transient NetworkManager manager = null;
 	private transient PeerGroup netPeerGroup = null;
 	private transient PipeAdvertisement pipeAdv;
@@ -47,19 +49,23 @@ public class JxtaSocketClient {
 			long start = System.currentTimeMillis();
 			System.out.println("### Connecting to the server");
 	
-			JxtaSocket socket = new JxtaSocket(netPeerGroup,					
+			JxtaSocket clientSocket = new JxtaSocket(netPeerGroup,					
 					null,// no specific peer id
 					pipeAdv,// ...pipe advertisement					
 					5000,// connection timeout: 5 seconds					
-					true);// reliable connection
-			socket.setSoTimeout(0);			
+					true);// reliable connection		
+//			SocketAddress socketAddr = new InetSocketAddress("localhost", 4700);
+//			JxtaSocket socket = new JxtaSocket(socketAddr);					
+			clientSocket.setSoTimeout(0);			
+			System.out.println("### Client: " + clientSocket.getLocalSocketAddress());
+			System.out.println("### InetAddress: " + clientSocket.getInetAddress());
 			
 			// get the socket output stream
-			OutputStream out = socket.getOutputStream();
+			OutputStream out = clientSocket.getOutputStream();
 			DataOutput dos = new DataOutputStream(out);
 
 			// get the socket input stream
-			InputStream in = socket.getInputStream();
+			InputStream in = clientSocket.getInputStream();
 			DataInput dis = new DataInputStream(in);			
 			
 			long totalSize = ITERATIONS * (long) PAYLOADSIZE;
@@ -80,7 +86,7 @@ public class JxtaSocketClient {
 
 			out.close();
 			in.close();
-			socket.close();
+			clientSocket.close();
 			System.out.println("### Socket closed");			
 
 			long finish = System.currentTimeMillis();
