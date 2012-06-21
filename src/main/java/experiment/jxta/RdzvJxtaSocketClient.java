@@ -26,9 +26,9 @@ import net.jxta.socket.JxtaSocket;
 public class RdzvJxtaSocketClient { 
 
 	private static int CLIENT_PORT = 7401;
-	private static long ITERATIONS = 10;	
-	private static long RUNS = 10;
-	private static int PAYLOADSIZE = 512 * 1024;
+	private static long ITERATIONS = 1;	
+	private static long RUNS = 1;
+	private static int PAYLOADSIZE = 64;
 	private static boolean isAkka = false;
 
 	private static final String clientName = Long.toString(System.nanoTime());

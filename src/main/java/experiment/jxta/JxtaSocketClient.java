@@ -8,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;

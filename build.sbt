@@ -31,3 +31,5 @@ libraryDependencies += "org.jboss.netty" % "netty" % "3.1.5.GA"
 libraryDependencies += "org.apache.derby" % "derby" % "10.5.3.0_1"
 
 libraryDependencies += "com.h2database" % "h2" % "1.1.118"
+
+libraryDependencies += "org.jnetpcap" % "jnetpcap-jxta" % "0.0.2"

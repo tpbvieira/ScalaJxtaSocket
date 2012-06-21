@@ -11,7 +11,7 @@ import java.text.MessageFormat;
 
 public class JavaSocketServer {
 
-	public static final int serverPort = 7400;
+	public static final int serverPort = 9701;
 
 	public JavaSocketServer(){
 		

@@ -16,7 +16,7 @@ public class JavaSocketClient {
 	private static long ITERATIONS = 50;
 	private static int PAYLOADSIZE = 512 * 1024;//1kb
 	private static String HOST = "localhost";
-	private static boolean isAkka = false;
+	private static boolean isAkka = true;
 
 	public JavaSocketClient() {
 	}
