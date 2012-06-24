@@ -1,6 +1,8 @@
+import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.nio.ReadOnlyBufferException
+import scala.collection.immutable.StringOps
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.IO
@@ -8,32 +10,27 @@ import akka.actor.IOManager
 import akka.actor.Props
 import akka.event.Logging
 import akka.util.ByteString
-import net.jxta.document.AdvertisementFactory
-import net.jxta.document.StructuredDocumentFactory
-import net.jxta.document.XMLDocument
-import net.jxta.document.XMLElement
+import net.jxta.document.MimeMediaType
+import net.jxta.document.TextDocument
+import net.jxta.endpoint.EndpointAddress
+import net.jxta.endpoint.Message
 import net.jxta.endpoint.MessageElement
+import net.jxta.endpoint.StringMessageElement
+import net.jxta.endpoint.TextDocumentMessageElement
+import net.jxta.id.ID
 import net.jxta.id.IDFactory
 import net.jxta.impl.endpoint.msgframing.WelcomeMessage
+import net.jxta.impl.endpoint.EndpointServiceImpl
 import net.jxta.parser.exceptions.JxtaBodyParserException
 import net.jxta.parser.exceptions.JxtaHeaderParserException
 import net.jxta.parser.exceptions.JxtaWelcomeParserException
 import net.jxta.parser.JxtaParser
+import net.jxta.peergroup.PeerGroup
 import net.jxta.peergroup.PeerGroupID
-import net.jxta.id.ID
-import scala.collection.immutable.HashMap
-import net.jxta.document.StructuredDocument
-import net.jxta.endpoint.EndpointAddress
-import net.jxta.impl.endpoint.EndpointServiceImpl
-import scala.collection.immutable.StringOps
-import net.jxta.endpoint.Message
-import net.jxta.endpoint.StringMessageElement
-import net.jxta.endpoint.TextDocumentMessageElement
-import java.io.File
 import net.jxta.platform.NetworkConfigurator
 import net.jxta.platform.NetworkManager
-import net.jxta.peergroup.PeerGroup
-import net.jxta.document.MimeMediaType
+import util.AkkaUtil
+import net.jxta.document.StructuredDocumentFactory
 
 class AkkaSocketServer(port: Int) extends Actor {
   
@@ -96,11 +93,21 @@ class AkkaSocketServer(port: Int) extends Actor {
 		  				val dstAddress = new EndpointAddress(dstAddressElement.toString())
 		  				val remoteHost = dstAddress.getProtocolAddress().split(":")		  				
 		  				val socket = IOManager(context.system).connect(remoteHost.apply(0), Integer.valueOf(remoteHost.apply(1)))
+		  				// connect
 		  				
 		  				val msg = new Message()		  				
-		  				msg.addMessageElement("jxta", new TextDocumentMessageElement("RdvAdvReply", netPeerGroup.getPeerAdvertisement().getDocument(MimeMediaType.XMLUTF8), null))
-		  				msg.addMessageElement("jxta", new StringMessageElement("ConnectedPeer", netPeerGroup.getPeerID().toString(), null))
+		  				val doc = netPeerGroup.getPeerAdvertisement().getDocument(MimeMediaType.XMLUTF8).asInstanceOf[TextDocument]
+		  				msg.addMessageElement("jxta", new TextDocumentMessageElement("RdvAdvReply", doc, null))		  				
+		  				msg.addMessageElement("jxta", new StringMessageElement("ConnectedPeer", netPeerGroup.getPeerID().toString(), null))		  				
 		  				msg.addMessageElement("jxta", new StringMessageElement("ConnectedLease", "1200000", null))
+		  						  				
+		  				val strDoc = AkkaUtil.structuredDocumentToXmldocument(StructuredDocumentFactory.newStructuredDocument(MimeMediaType.XMLUTF8, ""))
+		  				strDoc.addAttribute("xmlns:jxta", "http://jxta.org")
+		  				strDoc.addAttribute("xml:space", "preserve")
+		  				strDoc.appendChild(strDoc.createElement(SrcTag, srcAddress.toString()))
+		  				strDoc.appendChild(strDoc.createElement(DestTag, destAddress.toString()))
+		  				strDoc.appendChild(strDoc.createElement(LastHopTag, lastHop.toString()))
+		  				strDoc.appendChild(strDoc.createElement(GatewayForwardTag))		  				
 		  			}
 		  	  	
 		  		case e: JxtaHeaderParserException => 
