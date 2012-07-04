@@ -6,7 +6,7 @@ import akka.actor.IO
 import akka.actor.IOManager
 import akka.actor.Props
 
-class AkkaEchoServer(port: Int) extends Actor {
+class AkkaEchoServer1(port: Int) extends Actor {
 
   val state = IO.IterateeRef.Map.async[IO.Handle]()(context.dispatcher)
 
@@ -33,7 +33,7 @@ class AkkaEchoServer(port: Int) extends Actor {
   }
 }
 
-object AkkaEchoServer extends App{
+object AkkaEchoServer1 extends App{
   
   def processRequest(socket: IO.SocketHandle): IO.Iteratee[Unit] =  {
     println("### In process request")

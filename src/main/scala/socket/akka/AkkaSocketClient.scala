@@ -3,7 +3,7 @@ import akka.actor.Actor
 import akka.actor.IOManager
 import akka.actor.IO
 
-class AkkaSocketClient extends Actor {
+class AkkaSocketClient1 extends Actor {
 
   val address = new InetSocketAddress("remotehost", 80)
   val socket = IOManager(context.system).connect(address)

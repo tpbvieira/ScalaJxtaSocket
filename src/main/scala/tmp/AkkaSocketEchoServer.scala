@@ -1,4 +1,4 @@
-package socket.akka; 
+package tmp; 
 
 import java.net.InetSocketAddress
 
@@ -9,7 +9,7 @@ import akka.actor.IOManager
 import akka.actor.Props
 import akka.event.Logging
 
-class AkkaSocketEchoServer(port: Int) extends Actor {
+class AkkaSocketEchoServer (port: Int) extends Actor {
   
 	val log = Logging(context.system, this)
 

@@ -1,8 +1,9 @@
+package socket.akka
+
 import java.io.File
 import java.net.InetSocketAddress
 import java.net.SocketAddress
 import java.nio.ByteBuffer
-
 import akka.actor.IO.ReadHandle
 import akka.actor.IO.SocketHandle
 import akka.actor.Actor
@@ -14,7 +15,7 @@ import akka.actor.actorRef2Scala
 import akka.event.Logging
 import akka.routing.RoundRobinRouter
 import akka.util.ByteString
-import experiment.akka.SocketEvents
+import socket.akka.SocketEvents
 import net.jxta.endpoint.EndpointAddress
 import net.jxta.endpoint.Message
 import net.jxta.id.IDFactory
@@ -23,13 +24,14 @@ import net.jxta.peergroup.PeerGroup
 import net.jxta.peergroup.PeerGroupID
 import net.jxta.platform.NetworkManager
 import net.jxta.protocol.PipeAdvertisement
+//import socket.akka.SocketWorker
 
 sealed trait SocketMessage
 case class ConnectMessage(handle: ReadHandle, bytes: ByteString, message: Message) extends SocketMessage
 case class Read(handle: ReadHandle, bytes: ByteString, router: AkkaSocketServer) extends SocketMessage
 case class ConnectCallback(callBack: SocketEvents, socketHandle: SocketHandle) extends SocketMessage
 
-class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBack: SocketEvents) extends Actor {
+class AkkaSocketServer (peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBack: SocketEvents) extends Actor {
   
 	val serverName = "RdzvJxtaSocketServer"
 	val rdzvPort = 9701
@@ -43,7 +45,7 @@ class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBac
 	var dstAddress: EndpointAddress = null
 	var connection: SocketHandle = null
 	
-	val worker = context.actorOf(Props[Worker].withRouter(RoundRobinRouter(10)), name = "SocketWorker")
+	val worker = context.actorOf(Props[SocketWorker].withRouter(RoundRobinRouter(10)), name = "SocketWorker")
 
 	override def preStart {
 		log info "### AkkaSocketServer Start"
@@ -72,7 +74,7 @@ class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBac
 
 	def receive = {
 		case IO.NewClient(server) =>		  	
-			log info state + " ### Accpept: " + server
+			log info state + " ### Accept: " + server
 		    server.accept()			
 			state = state.+(1)
 			

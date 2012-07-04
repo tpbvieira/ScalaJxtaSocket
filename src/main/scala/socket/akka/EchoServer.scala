@@ -10,9 +10,9 @@ import java.net.Socket
 import scala.actors.Actor.actor
 import scala.actors.Actor
 
-case class Echo(socket: Socket)
+case class Echo1(socket: Socket)
 
-object Service extends Actor {
+object Service1 extends Actor {
 
 	implicit def inputStreamWrapper(in: InputStream) =	new BufferedReader(new InputStreamReader(in))
 
@@ -28,7 +28,7 @@ object Service extends Actor {
 	def act() {
 		loop {
 			receive {
-			case Echo(socket) =>
+			case Echo1(socket) =>
 				actor {
 					echo(socket.getInputStream(), socket.getOutputStream())
 					socket.close
@@ -38,8 +38,8 @@ object Service extends Actor {
 	}
 }
 
-object EchoServer extends App{
-	Service.start
+object EchoServer1 extends App{
+	Service1.start
 	println("1");
 	val serverSocket = new ServerSocket(7400)
 	println("2");
@@ -49,10 +49,10 @@ object EchoServer extends App{
 		while(true) {
 			println("about to block")
 			val clientSocket = serverSocket.accept()
-			Service ! Echo(clientSocket)
+			Service1 ! Echo1(clientSocket)
 			println("back from actor")
 		}
 	}
 	
-	EchoServer.start
+	EchoServer1.start
 }

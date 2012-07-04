@@ -32,7 +32,7 @@ import net.jxta.platform.NetworkManager
 import util.AkkaUtil
 import net.jxta.document.StructuredDocumentFactory
 
-class AkkaSocketServer(port: Int) extends Actor {
+class AkkaSocketServer (port: Int) extends Actor {
   
 	val serverName = "RdzvJxtaSocketServer"
 	val rdzvPort = 9701
@@ -104,10 +104,10 @@ class AkkaSocketServer(port: Int) extends Actor {
 		  				val strDoc = AkkaUtil.structuredDocumentToXmldocument(StructuredDocumentFactory.newStructuredDocument(MimeMediaType.XMLUTF8, ""))
 		  				strDoc.addAttribute("xmlns:jxta", "http://jxta.org")
 		  				strDoc.addAttribute("xml:space", "preserve")
-		  				strDoc.appendChild(strDoc.createElement(SrcTag, srcAddress.toString()))
-		  				strDoc.appendChild(strDoc.createElement(DestTag, destAddress.toString()))
-		  				strDoc.appendChild(strDoc.createElement(LastHopTag, lastHop.toString()))
-		  				strDoc.appendChild(strDoc.createElement(GatewayForwardTag))		  				
+		  				//strDoc.appendChild(strDoc.createElement(SrcTag, srcAddress.toString()))
+		  				//strDoc.appendChild(strDoc.createElement(DestTag, destAddress.toString()))
+		  				//strDoc.appendChild(strDoc.createElement(LastHopTag, lastHop.toString()))
+		  				//strDoc.appendChild(strDoc.createElement(GatewayForwardTag))		  				
 		  			}
 		  	  	
 		  		case e: JxtaHeaderParserException => 

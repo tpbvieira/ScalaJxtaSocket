@@ -2,7 +2,7 @@ import java.net.InetSocketAddress
 
 import akka.actor._
 
-class AkkaTCPServer(port: Int) extends Actor {
+class AkkaTCPServer1(port: Int) extends Actor {
 
 	override def preStart {
 		IOManager(context.system) listen new InetSocketAddress(port)
@@ -36,7 +36,7 @@ class AkkaTCPServer(port: Int) extends Actor {
 	}
 }
 
-object AkkaTCPServer extends App{
+object AkkaTCPServer1 extends App{
 	println("01!")
 	val port = 7400
 	ActorSystem().actorOf(Props(new AkkaTCPServer(port)))
