@@ -3,9 +3,6 @@ package util;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.Element;
 import net.jxta.document.StructuredDocument;
@@ -14,6 +11,9 @@ import net.jxta.document.XMLDocument;
 import net.jxta.endpoint.Message;
 import net.jxta.endpoint.MessageElement;
 import net.jxta.protocol.PeerAdvertisement;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 
 @SuppressWarnings("rawtypes")
 public class AkkaUtil {
@@ -42,8 +42,4 @@ public class AkkaUtil {
 		return ChannelBuffers.wrappedBuffer(buffer);
 	}
 	
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 40847b96c397c59d34b0b097a5efcbfee7417d67
