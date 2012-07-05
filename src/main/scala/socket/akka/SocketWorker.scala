@@ -2,9 +2,7 @@ package socket.akka
 
 import java.io.IOException
 import java.nio.ReadOnlyBufferException
-
 import scala.Array.canBuildFrom
-
 import akka.actor.actorRef2Scala
 import akka.actor.Actor
 import akka.event.Logging

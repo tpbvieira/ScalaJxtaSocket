@@ -42,4 +42,8 @@ public class AkkaUtil {
 		return ChannelBuffers.wrappedBuffer(buffer);
 	}
 	
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 40847b96c397c59d34b0b097a5efcbfee7417d67

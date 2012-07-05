@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 package socket.akka 
+=======
+package socket.akka
+>>>>>>> 40847b96c397c59d34b0b097a5efcbfee7417d67
 
 import java.io.File
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
-
 import akka.actor.IO.ReadHandle
 import akka.actor.IO.SocketHandle
 import akka.actor.actorRef2Scala
@@ -15,6 +18,10 @@ import akka.actor.Props
 import akka.event.Logging
 import akka.routing.RoundRobinRouter
 import akka.util.ByteString
+<<<<<<< HEAD
+=======
+import socket.akka.SocketEvents
+>>>>>>> 40847b96c397c59d34b0b097a5efcbfee7417d67
 import net.jxta.endpoint.EndpointAddress
 import net.jxta.endpoint.Message
 import net.jxta.id.IDFactory
@@ -23,13 +30,14 @@ import net.jxta.peergroup.PeerGroup
 import net.jxta.peergroup.PeerGroupID
 import net.jxta.platform.NetworkManager
 import net.jxta.protocol.PipeAdvertisement
+//import socket.akka.SocketWorker
 
 sealed trait SocketMessage
 case class ConnectMessage(handle: ReadHandle, bytes: ByteString, message: Message) extends SocketMessage
 case class Read(handle: ReadHandle, bytes: ByteString, router: AkkaSocketServer) extends SocketMessage
 case class ConnectCallback(callBack: SocketEvents, socketHandle: SocketHandle) extends SocketMessage
 
-class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBack: SocketEvents) extends Actor {
+class AkkaSocketServer (peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBack: SocketEvents) extends Actor {
   
 	val serverName = "RdzvJxtaSocketServer"
 	val rdzvPort = 9701
@@ -71,7 +79,7 @@ class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBac
 
 	def receive = {
 		case IO.NewClient(server) =>		  	
-			log info state + " ### Accpept: " + server
+			log info state + " ### Accept: " + server
 		    server.accept()			
 			state = state.+(1)
 			
