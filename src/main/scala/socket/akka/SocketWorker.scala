@@ -1,22 +1,24 @@
+package socket.akka
+
 import java.io.IOException
 import java.nio.ReadOnlyBufferException
 
 import scala.Array.canBuildFrom
 
+import akka.actor.actorRef2Scala
 import akka.actor.Actor
-import akka.actor.IOManager
 import akka.event.Logging
 import akka.util.ByteString
 import net.jxta.document.MimeMediaType
 import net.jxta.document.StructuredDocumentFactory
 import net.jxta.document.TextDocument
-import net.jxta.endpoint.EndpointAddress
 import net.jxta.endpoint.Message
 import net.jxta.endpoint.StringMessageElement
 import net.jxta.endpoint.TextDocumentMessageElement
 import net.jxta.endpoint.WireFormatMessageFactory
 import net.jxta.impl.endpoint.msgframing.MessagePackageHeader
 import net.jxta.impl.endpoint.msgframing.WelcomeMessage
+import net.jxta.impl.endpoint.netty.SerializedMessage
 import net.jxta.impl.endpoint.EndpointServiceImpl
 import net.jxta.parser.exceptions.JxtaBodyParserException
 import net.jxta.parser.exceptions.JxtaHeaderParserException
@@ -24,7 +26,7 @@ import net.jxta.parser.exceptions.JxtaWelcomeParserException
 import net.jxta.parser.JxtaParser
 import util.AkkaUtil
 
-class Worker extends Actor {
+class SocketWorker extends Actor {
   
 	val log = Logging(context.system, this)
   
@@ -56,6 +58,8 @@ class Worker extends Actor {
 				  msg.addMessageElement("jxta", new StringMessageElement("ConnectedPeer", router.netPeerGroup.getPeerID().toString(), null))		  				
 				  msg.addMessageElement("jxta", new StringMessageElement("ConnectedLease", "1200000", null))
 				
+//				  readHandle.asSocket write ByteString.apply(msg.getByteBuffer());
+				  
 				  // creating EndpointRouterMsg
 				  var strDoc = AkkaUtil.structuredDocumentToXmldocument(StructuredDocumentFactory.newStructuredDocument(MimeMediaType.XMLUTF8, "jxta:ERM"))
 				  strDoc.addAttribute("xmlns:jxta", "http://jxta.org")
@@ -69,13 +73,24 @@ class Worker extends Actor {
 				  msg.addMessageElement("jxta", new StringMessageElement(EndpointServiceImpl.MESSAGE_SOURCE_NAME, router.serverId.getUniqueValue().toString(), null))
 				  msg.addMessageElement("jxta", new StringMessageElement(EndpointServiceImpl.MESSAGE_DESTINATION_NAME, dstAdd + "/EndpointService:jxta-NetGroup/EndpointRouter", null))
 				  
-				  val serialed = WireFormatMessageFactory.toWire(msg, WireFormatMessageFactory.DEFAULT_WIRE_MIME, null)
+				  val wireMessage = WireFormatMessageFactory.toWire(msg, WireFormatMessageFactory.DEFAULT_WIRE_MIME, null)
+				  val messageBytes = AkkaUtil.wrappedBuffer((wireMessage.getByteBuffers()));
+				  
 				  val header = new MessagePackageHeader()					
-				  header.setContentTypeHeader(serialed.getMimeType())
-				  header.setContentLengthHeader(serialed.getByteLength())
+				  header.setContentTypeHeader(WireFormatMessageFactory.DEFAULT_WIRE_MIME)
+				  header.setContentLengthHeader(messageBytes.readableBytes())
+				  
+				  val serializedMessage = new SerializedMessage(header, messageBytes)
 				  
 				  val byteStr = ByteString.apply(header.getByteBuffer())				  
-				  serialed.getByteBuffers() flatMap (item => byteStr.++(ByteString.apply(item)))
+				  wireMessage.getByteBuffers() flatMap (item => byteStr.++(ByteString.apply(item)))
+				  
+//				  val bos = new ByteArrayOutputStream()
+//				  val out = new ObjectOutputStream(bos)   
+//				  out.writeObject(serializedMessage)
+//				  val serBytes = bos.toByteArray()
+//				  
+//				  val byteStr = ByteString.apply(serBytes)
 				  
 				  router.connection.asSocket write byteStr
 		  	  }

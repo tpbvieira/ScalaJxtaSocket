@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -24,13 +23,13 @@ import net.jxta.platform.NetworkManager;
 import net.jxta.socket.JxtaSocket;
 
 public class RdzvJxtaSocketClient { 
-
-	private static int CLIENT_PORT = 7401;
+	
 	private static long ITERATIONS = 1;	
-	private static long RUNS = 1;
-	private static int PAYLOADSIZE = 64;
+	private static long RUNS = 10;
+	private static int PAYLOADSIZE = 1024 * 64;
 	private static boolean isAkka = false;
 
+	private static int CLIENT_PORT = 7401;
 	private static final String clientName = Long.toString(System.nanoTime());
 	private static final File confFile = new File("." + clientName);
 	private static final PeerID peerId = IDFactory.newPeerID(PeerGroupID.defaultNetPeerGroupID, clientName.getBytes());
@@ -73,13 +72,13 @@ public class RdzvJxtaSocketClient {
 	}
 
 	public void run() {
-		JxtaSocket socket = null;
+		JxtaSocket socket = null;		
+		long start, end, elapsed;
+		
 		try {
-			long start = System.currentTimeMillis();
-			System.out.println("### RdzvJxtaSocketClient connecting to the server");
-
 			socket = new JxtaSocket(netPeerGroup, RdzvJxtaSocketServer.rdzvId, RdzvJxtaSocketServer.createSocketAdvertisement(), 60000, true);
 			socket.setSoTimeout(60000);
+			System.out.println("### RdzvJxtaSocketClient connected to RdzvJxtaSocketServer");
 
 			// get the socket output stream
 			OutputStream out = socket.getOutputStream();
@@ -89,12 +88,13 @@ public class RdzvJxtaSocketClient {
 			InputStream in = socket.getInputStream();
 			DataInput dis = new DataInputStream(in);
 
-			long totalSize = ITERATIONS * (long) PAYLOADSIZE;
+			start = System.currentTimeMillis();
+			long totalSize = ITERATIONS * (long) PAYLOADSIZE * 2;
 			if(!isAkka){
 				dos.writeLong(ITERATIONS);
 				dos.writeInt(PAYLOADSIZE);
 			}
-			System.out.println("### Client Sending/Receiving " + totalSize + " bytes in " + ITERATIONS + " iterations.");
+			System.out.println("### Sending/Receiving " + totalSize + " bytes in " + ITERATIONS + " iterations.");
 
 			for (int i = 0; i < ITERATIONS; i++) {
 				byte[] out_buf = new byte[PAYLOADSIZE];
@@ -103,20 +103,20 @@ public class RdzvJxtaSocketClient {
 				dos.write(out_buf);
 				out.flush();
 				dis.readFully(in_buf);
+				
 				if(!Arrays.equals(in_buf, out_buf)){
 					System.out.println("??? Erro on Sent/Received data!");
 				}
-			}
-
+			}			
 			out.close();
 			in.close();
 			socket.close();
-			System.out.println("### Socket connection closed");			
-
-			long finish = System.currentTimeMillis();
-			long elapsed = finish - start;
-			System.out.println(MessageFormat.format("### Processed {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
-					totalSize, elapsed,(totalSize / elapsed) * 1000 / 1024));
+			System.out.println("### Socket connection closed");
+			
+			end = System.currentTimeMillis();
+			elapsed = end - start;
+			System.out.println("### Throughput = " + ((totalSize / elapsed) * 1000 / 1024) + " KB/sec");
+			
 		} catch (Exception io) {
 			io.printStackTrace();
 			try{

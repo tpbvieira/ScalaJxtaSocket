@@ -7,27 +7,22 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 public class JavaSocketClient {
 
+	private static long ITERATIONS = 1;
 	private static long RUNS = 10;
-	private static long ITERATIONS = 50;
-	private static int PAYLOADSIZE = 512 * 1024;//1kb
-	private static String HOST = "localhost";
-	private static boolean isAkka = true;
+	private static int PAYLOADSIZE = 1024 * 1024;
+	private static boolean isAkka = false;
 
-	public JavaSocketClient() {
-	}
+	private static String HOST = "localhost";
 
 	public void run() {
 		try {
-			long start = System.currentTimeMillis();
-			System.out.println("### JavaSocketClient connecting to the server");
-
-			Socket socket = new Socket(HOST,JavaSocketServer.serverPort);
+			Socket socket = new Socket(HOST,JavaSocketServer.javaSocketServerPort);
 			socket.setSoTimeout(0);
+			System.out.println("### JavaSocketClient connected to server");
 
 			// get the socket output stream
 			OutputStream out = socket.getOutputStream();
@@ -37,12 +32,13 @@ public class JavaSocketClient {
 			InputStream in = socket.getInputStream();
 			DataInput dis = new DataInputStream(in);
 
+			long start = System.currentTimeMillis();
 			long totalSize = ITERATIONS * (long) PAYLOADSIZE;
 			if(!isAkka){
 				dos.writeLong(ITERATIONS);
 				dos.writeInt(PAYLOADSIZE);
 			}
-			System.out.println("### Client Sending/Receiving " + totalSize + " bytes in " + ITERATIONS + " iterations.");
+			System.out.println("### Sending/Receiving " + totalSize + " bytes in " + ITERATIONS + " iterations.");
 
 			for (int i = 0; i < ITERATIONS; i++) {
 				byte[] out_buf = new byte[PAYLOADSIZE];
@@ -55,16 +51,15 @@ public class JavaSocketClient {
 					System.out.println("??? Erro on Sent/Received data!");
 				}
 			}
-
+			
 			out.close();
 			in.close();
 			socket.close();
-			System.out.println("### Socket connection closed");			
-
-			long finish = System.currentTimeMillis();
-			long elapsed = finish - start;
-			System.out.println(MessageFormat.format("### Processed {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
-					totalSize, elapsed,(totalSize / elapsed) * 1000 / 1024));
+			System.out.println("### Socket connection closed");
+			
+			long end = System.currentTimeMillis();
+			long elapsed = end - start;
+			System.out.println("### Throughput = " + ((totalSize / elapsed) * 1000 / 1024) + " KB/sec");
 		} catch (Exception io) {
 			io.printStackTrace();
 		}
@@ -89,7 +84,7 @@ public class JavaSocketClient {
 				System.out.println("\n### Socket connection #" + i);
 				socEx.run();
 			}
-			System.out.println("### Test Finished");
+			System.out.println("\n\n### Test Finished");
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

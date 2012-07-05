@@ -1,6 +1,10 @@
 package util;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
 
 import net.jxta.document.AdvertisementFactory;
 import net.jxta.document.Element;
@@ -13,7 +17,6 @@ import net.jxta.protocol.PeerAdvertisement;
 
 @SuppressWarnings("rawtypes")
 public class AkkaUtil {
-
 	
 	public static XMLDocument structuredDocumentToXmldocument(StructuredDocument strDoc){
 		return (XMLDocument)strDoc;
@@ -33,6 +36,10 @@ public class AkkaUtil {
 	@SuppressWarnings("unchecked")
 	public static void append(XMLDocument doc, Element el){
 		doc.appendChild(el);
+	}
+	
+	public static ChannelBuffer wrappedBuffer(ByteBuffer[] buffer){
+		return ChannelBuffers.wrappedBuffer(buffer);
 	}
 	
 }

@@ -1,20 +1,20 @@
+package socket.akka 
+
 import java.io.File
 import java.net.InetSocketAddress
-import java.net.SocketAddress
 import java.nio.ByteBuffer
 
 import akka.actor.IO.ReadHandle
 import akka.actor.IO.SocketHandle
+import akka.actor.actorRef2Scala
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.IO
 import akka.actor.IOManager
 import akka.actor.Props
-import akka.actor.actorRef2Scala
 import akka.event.Logging
 import akka.routing.RoundRobinRouter
 import akka.util.ByteString
-import experiment.akka.SocketEvents
 import net.jxta.endpoint.EndpointAddress
 import net.jxta.endpoint.Message
 import net.jxta.id.IDFactory
@@ -43,7 +43,7 @@ class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBac
 	var dstAddress: EndpointAddress = null
 	var connection: SocketHandle = null
 	
-	val worker = context.actorOf(Props[Worker].withRouter(RoundRobinRouter(10)), name = "SocketWorker")
+	val worker = context.actorOf(Props[SocketWorker].withRouter(RoundRobinRouter(10)), name = "SocketWorker")
 
 	override def preStart {
 		log info "### AkkaSocketServer Start"
@@ -66,8 +66,7 @@ class AkkaSocketServer(peerGroup: PeerGroup, pipeAdv: PipeAdvertisement, callBac
 			netPeerGroup = netManager.startNetwork()
 		}else{
 		    netPeerGroup = peerGroup
-		}	
-		
+		}
 	}
 
 	def receive = {

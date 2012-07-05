@@ -7,40 +7,35 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.MessageFormat;
 
 public class JavaSocketServer {
 
-	public static final int serverPort = 9701;
-
-	public JavaSocketServer(){
-		
-	}
+	public static final int javaSocketServerPort = 9701;
+	private int connections = 0;
 
 	public void run() {
-		System.out.println("### Starting JavaSocketServer");
+		System.out.println("### " + Thread.currentThread().getId() + ": Starting JavaSocketServer");
 		ServerSocket serverSocket = null;
 		try {
-			serverSocket = new ServerSocket(serverPort, 10);
-		} catch (IOException e1) {
-			e1.printStackTrace();
+			serverSocket = new ServerSocket(javaSocketServerPort, 10);
+		} catch (IOException e) {
+			System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());
 		}
 
-		int i = 1;
 		while (true) {
 			try {
-				System.out.println("### Waiting for connections");
+//				System.out.println("### " + Thread.currentThread().getId() + ": Waiting for connections");
 				serverSocket.setSoTimeout(0);
-				Socket socket = serverSocket.accept();
+				Socket socket = serverSocket.accept();				
 				if (socket != null) {
-					System.out.println("\n### Receiving #" + i++);
-					Thread thread = new Thread(new ConnectionHandler(socket), "ConnectionHandlerThread");
-					thread.start();
+					addConnection();
+					Thread thread = new Thread(new ConnectionHandler(socket), "JavaSocketServerConnectionHandlerThread");
+					thread.start();					
 				}else{
-					System.out.println("### Socket null!! \nStill waiting...");
+					System.out.println("### Error accepting new connection!! \nStill waiting...");
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());
 			}
 		}
 	}
@@ -62,13 +57,11 @@ public class JavaSocketServer {
 
 				long iterations = dis.readLong();
 				int dataSize = dis.readInt();
-				long totalSize = iterations * dataSize;				
+				long totalSize = iterations * dataSize * 2;				
 
-				System.out.println("### Iterations: " + iterations);
-				System.out.println("### Size: " + dataSize);
-				
-				System.out.println(MessageFormat.format("### ThreadId:{0} Sending/Receiving {1} bytes in {2} times.", 
-						Thread.currentThread().getId(), totalSize, iterations));
+//				System.out.println("### " + Thread.currentThread().getId() + ": Iterations: " + iterations);
+//				System.out.println("### " + Thread.currentThread().getId() + ": Size: " + dataSize);				
+				System.out.println("\n### " + Thread.currentThread().getId() + ": Sending/Receiving " + totalSize + " bytes in " + iterations + " times");
 
 				for (int i = 0; i < iterations; i++) {
 					byte[] buf = new byte[dataSize];
@@ -80,15 +73,14 @@ public class JavaSocketServer {
 				out.close();
 				in.close();
 				socket.close();
-				System.out.println("### ThreadId:" + Thread.currentThread().getId() + " Socket closed");
 				
-				long finish = System.currentTimeMillis();
-				long elapsed = finish - start;
-
-				System.out.println(MessageFormat.format("### ThreadId:{3} Received {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
-						totalSize, elapsed,	(totalSize / elapsed) * 1000 / 1024, Thread.currentThread().getId()));
-			} catch (Exception ie) {
-				ie.printStackTrace();
+				long end = System.currentTimeMillis();
+				long elapsed = end - start;
+				System.out.println("### " + Thread.currentThread().getId() + ": Throughput = " + ((totalSize / elapsed) * 1000 / 1024) 
+						+ " KB/sec  Connections = " + connections);
+				subConnection();
+			} catch (Exception e) {
+				System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());
 			} 
 		}
 
@@ -105,5 +97,13 @@ public class JavaSocketServer {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private synchronized void addConnection(){
+		connections++;
+	}
+	
+	private synchronized void subConnection(){
+		connections--;
 	}
 }

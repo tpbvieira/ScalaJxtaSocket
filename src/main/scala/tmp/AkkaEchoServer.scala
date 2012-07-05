@@ -1,3 +1,5 @@
+package tmp
+
 import java.net.InetSocketAddress
 
 import akka.actor.Actor

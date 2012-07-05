@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.text.MessageFormat;
 import java.util.logging.Level;
 
 import net.jxta.document.AdvertisementFactory;
@@ -31,6 +30,8 @@ public class RdzvJxtaSocketServer {
 	public static final int rdzvPort = 9701;
 	public static final PeerID rdzvId = IDFactory.newPeerID(PeerGroupID.defaultNetPeerGroupID, serverName.getBytes());	
 	public static final File confFile = new File("." + System.getProperty("file.separator") + serverName);
+	
+	private int connections = 0;
 	
 	public RdzvJxtaSocketServer() throws IOException, PeerGroupException {
 		NetworkManager.RecursiveDelete(confFile);
@@ -57,29 +58,28 @@ public class RdzvJxtaSocketServer {
 	}
 
 	public void run() {
-		System.out.println("### Starting RdzvJxtaSocketServer");
+		System.out.println("### " + Thread.currentThread().getId() + ": Starting RdzvJxtaSocketServer");
 		JxtaServerSocket serverSocket = null;		
 		try {
 			PipeAdvertisement pipeAdv = createSocketAdvertisement();
 			serverSocket = new JxtaServerSocket(netPeerGroup, pipeAdv);
 			serverSocket.setSoTimeout(0);
 		} catch (Exception e) {
-			System.out.println("### Erro on JxtaServerSocket creation!");
-			e.printStackTrace();			
+			System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());			
 			throw new RuntimeException(e);
 		}
 
 		while (true) {
 			try {
-				System.out.println("### Waiting for connections");
-				Socket socket = serverSocket.accept();
-				if (socket != null) {					
+//				System.out.println("### " + Thread.currentThread().getId() + ": Waiting for connections");
+				Socket socket = serverSocket.accept();				
+				if (socket != null) {
+					addConnection();
 					Thread thread = new Thread(new ConnectionHandler(socket), "RdzvJxtaSocketServerConnectionHandlerThread");
-					thread.start();
+					thread.start();					
 				}
 			} catch (Exception e) {
-				System.out.println("### Error accepting socket request");
-				e.printStackTrace();				
+				System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());				
 			}
 		}
 	}
@@ -101,13 +101,11 @@ public class RdzvJxtaSocketServer {
 
 				long iterations = dis.readLong();
 				int dataSize = dis.readInt();
-				long totalSize = iterations * dataSize;				
+				long totalSize = iterations * dataSize * 2;				
 
-				System.out.println("### Iterations: " + iterations);
-				System.out.println("### Size: " + dataSize);
-				
-				System.out.println(MessageFormat.format("### ThreadId:{0} Sending/Receiving {1} bytes in {2} times.", 
-						Thread.currentThread().getId(), totalSize, iterations));
+//				System.out.println("### " + Thread.currentThread().getId() + ": Iterations: " + iterations);
+//				System.out.println("### " + Thread.currentThread().getId() + ": Size: " + dataSize);				
+				System.out.println("\n### " + Thread.currentThread().getId() + ": Sending/Receiving " + totalSize + " bytes in " + iterations + " times");
 
 				for (int i = 0; i < iterations; i++) {
 					byte[] buf = new byte[dataSize];
@@ -119,26 +117,25 @@ public class RdzvJxtaSocketServer {
 				out.close();
 				in.close();
 				socket.close();
-				System.out.println("### ThreadId:" + Thread.currentThread().getId() + " Socket closed");
 				
-				long finish = System.currentTimeMillis();
-				long elapsed = finish - start;
-
-				System.out.println(MessageFormat.format("### ThreadId:{3} Received {0} bytes in {1} ms. Throughput = {2} KB/sec.", 
-						totalSize, elapsed,	(totalSize / elapsed) * 1000 / 1024, Thread.currentThread().getId()));
+				long end = System.currentTimeMillis();
+				long elapsed = end - start;
+				System.out.println("### " + Thread.currentThread().getId() + ": Throughput = " + ((totalSize / elapsed) * 1000 / 1024) 
+						+ " KB/sec  Connections = " + connections);
+				subConnection();
 			}  catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());
 				try {
 					socket.close();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e1.getMessage());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e.getMessage());
 				try {
 					socket.close();
 				} catch (IOException e1) {
-					e1.printStackTrace();
+					System.out.println("### " + Thread.currentThread().getId() + ": Error = " + e1.getMessage());
 				}
 			} 
 		}
@@ -147,13 +144,21 @@ public class RdzvJxtaSocketServer {
 			receiveData(socket);
 		}
 	}
+	
+	private synchronized void addConnection(){
+		connections++;
+	}
+	
+	private synchronized void subConnection(){
+		connections--;
+	}
 
-	public static void main(String args[]) {
-		System.setProperty(Logging.JXTA_LOGGING_PROPERTY, Level.SEVERE.toString());
+	public static void main(String args[]) {		
 		try {
 			Thread.currentThread().setName(RdzvJxtaSocketServer.class.getName() + ".main()");
 			RdzvJxtaSocketServer jxtaSocketserver = new RdzvJxtaSocketServer();
 			jxtaSocketserver.run();
+			System.setProperty(Logging.JXTA_LOGGING_PROPERTY, Level.SEVERE.toString());
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

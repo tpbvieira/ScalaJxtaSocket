@@ -28,7 +28,7 @@ public class JxtaSocketServer {
 	public static final String serverName = "JxtaSocketServer";
 
 	public JxtaSocketServer() throws IOException, PeerGroupException {
-		NetworkManager manager = new NetworkManager(NetworkManager.ConfigMode.ADHOC, serverName, new File(new File(".cache"), serverName).toURI());
+		NetworkManager manager = new NetworkManager(NetworkManager.ConfigMode.ADHOC, serverName, new File(new File(".jxtacache"), serverName).toURI());
 		manager.startNetwork();
 		netPeerGroup = manager.getNetPeerGroup();
 	}
